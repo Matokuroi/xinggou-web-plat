@@ -24,7 +24,7 @@
         logining: false,
         ruleForm2: {
           account: 'admin',
-          checkPass: '123456'
+          checkPass: 'admin'
         },
         rules2: {
           account: [
@@ -51,7 +51,8 @@
             this.logining = true;
             //NProgress.start();
             var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
-            requestLogin(loginParams).then(data => {
+            //mockjs登录测试方式
+            /*requestLogin(loginParams).then(data => {
               this.logining = false;
               //NProgress.done();
               let { msg, code, user } = data;
@@ -62,9 +63,24 @@
                 });
               } else {
                 sessionStorage.setItem('user', JSON.stringify(user));
-                this.$router.push({ path: '/table' });
+                this.$router.push({ path: '/echarts' });
               }
-            });
+            });*/
+            //easymock登录测试方式
+              this.$http.post("/user/login",loginParams).then(resp=>{
+                  this.logining = false;
+                  //NProgress.done();
+                  let { success, message, resultObj,errorCode } = resp.data;
+                  if (!success) {
+                      this.$message({
+                          message: message,
+                          type: 'error'
+                      });
+                  } else {
+                      sessionStorage.setItem('user', JSON.stringify(resultObj));
+                      this.$router.push({ path: '/echarts' });
+                  }
+              })
           } else {
             console.log('error submit!!');
             return false;
